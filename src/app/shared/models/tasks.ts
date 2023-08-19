@@ -1,1 +1,0 @@
-export interface ITask{ isChecked: boolean; content: string; }

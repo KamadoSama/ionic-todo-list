@@ -1,61 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { TaskService } from '../shared/services/tasks.service';
-import { Observable, map, take } from 'rxjs';
-import { ITask } from '../shared/models/tasks';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit{
+export class HomePage {
   title:string = 'Kamado BG'
   isOpen:boolean = true;
-  tasks$!: Observable<ITask[]>
+  tasks: any[] = []
   newTask!:string
-  constructor(private taskService: TaskService) {}
-
-  ngOnInit(): void {
-    this.tasks$ = this.taskService.getTasks()
-  }
-  
-  // this.taskservice.getTasks().subscribe({
-  //   next: task=>{
-  //     this.tasks = task
-  //   }
-  // })
-
+  constructor() {}
   addNewTask(){
-
     let task = {
       isChecked:false,
       content:this.newTask
     }
-    console.log(task)
     this.newTask = ''
-    this.taskService.createTasks(task).subscribe({
-      next:task=>console.log('ok')
-    })
+    this.tasks.push(task)
   }
-  onCheck(event: any, i: number) {
-    this.tasks$.pipe(
-      take(1),
-      map((tasks)=>{
-        const updatedTasks = [...tasks]
-        updatedTasks[i].isChecked = event.detail.checked
-        return updatedTasks[i]
-      })
-    ).subscribe((updatedTasks)=>{
-      this.taskService.updateTask(updatedTasks,i)
-    })
+  onCheck(event:any,i:number){
+    this.tasks[i].isChecked = event.detail.checked
   }
-
-  deleteTask(i: number) {
-   this.taskService.deleteTask(i).subscribe({
-    next:taks=>console.log('delete')
-   })
+  deleteTask(i:number){
+    this.tasks.splice(i,1)
   }
-
-
-
 }
