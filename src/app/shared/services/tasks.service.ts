@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Observable, throwError } from "rxjs";
 import { catchError,tap,map } from "rxjs/operators";
+import { ITask } from "../models/tasks";
 
 
 
@@ -13,18 +14,29 @@ export class TaskService{
 
   constructor(private http:HttpClient){}
  
-  public getTasks():Observable<Task[]>{
-    return this.http.get<Task[]>(this.TASKS_API_URL).pipe(
+  public getTasks():Observable<ITask[]>{
+    return this.http.get<ITask[]>(this.TASKS_API_URL).pipe(
       tap(task =>console.log(task))
     )
   }
 
-  public createTasks(task:Task ):Observable<any[]>{
+  public createTasks(task:ITask ):Observable<ITask[]>{
     console.log(`Task ${task.content}`)
-    return this.http.post<Task[]>(this.TASKS_API_URL,task).pipe(
+    return this.http.post<ITask[]>(this.TASKS_API_URL,task).pipe(
       tap(tasks=>console.log(tasks)),
       catchError(this.handleError)
     )
+  }
+
+  public updateTask(task:ITask,id:number):Observable<ITask>{
+    const url = `${this.TASKS_API_URL}/${id +1}`
+    return this.http.put<ITask>(url,task).pipe(catchError(this.handleError))
+  }
+
+  public deleteTask(id:number):Observable<{}>{
+    const url = `${this.TASKS_API_URL}/${id +1}`
+
+    return this.http.delete<ITask>(url).pipe(catchError(this.handleError))
   }
 
   private handleError(error: HttpErrorResponse){

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../shared/services/tasks.service';
-import { Observable } from 'rxjs';
+import { Observable, map, take } from 'rxjs';
 import { ITask } from '../shared/models/tasks';
 
 @Component({
@@ -16,12 +16,7 @@ export class HomePage implements OnInit{
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-      this.taskService.getTasks().subscribe({
-        next:tasks=>{
-          console.log(tasks)
-          this.tasks = tasks
-        }
-      })
+    this.tasks$ = this.taskService.getTasks()
   }
   
   // this.taskservice.getTasks().subscribe({
@@ -42,11 +37,23 @@ export class HomePage implements OnInit{
       next:task=>console.log('ok')
     })
   }
-  onCheck(event:any,i:number){
-    this.tasks[i].isChecked = event.detail.checked
+  onCheck(event: any, i: number) {
+    this.tasks$.pipe(
+      take(1),
+      map((tasks)=>{
+        const updatedTasks = [...tasks]
+        updatedTasks[i].isChecked = event.detail.checked
+        return updatedTasks[i]
+      })
+    ).subscribe((updatedTasks)=>{
+      this.taskService.updateTask(updatedTasks,i)
+    })
   }
-  deleteTask(i:number){
-    this.tasks.splice(i,1)
+
+  deleteTask(i: number) {
+   this.taskService.deleteTask(i).subscribe({
+    next:taks=>console.log('delete')
+   })
   }
 
 

@@ -18,7 +18,7 @@
   <div class="empty">
     <small>Vous n'avez pas de taches</small>
   </div>
-  <ion-list *ngIf="tasks$.length | async">
+  <ion-list *ngIf="(tasks$ | async)?.length">
     <ion-list-header>
       Mes Taches
     </ion-list-header>
