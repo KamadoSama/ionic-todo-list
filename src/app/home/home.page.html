@@ -18,11 +18,11 @@
   <div class="empty">
     <small>Vous n'avez pas de taches</small>
   </div>
-  <ion-list *ngIf="tasks$.length | async">
+  <ion-list *ngIf="tasks.length">
     <ion-list-header>
       Mes Taches
     </ion-list-header>
-    <ion-card class="tasks" *ngFor="let task of tasks$ | async let i=index" >
+    <ion-card class="tasks" *ngFor="let task of tasks  let i=index" >
       <ion-checkbox color="danger" [checked]="task.isChecked" (ionChange)="onCheck($event , i)"></ion-checkbox>
       <h4 *ngIf="!task.isChecked" class="task-title">{{task.content}}</h4>
       <h4 *ngIf="task.isChecked" class="task-title" style="color: red; text-decoration: line-through;">{{task.content}}</h4>
